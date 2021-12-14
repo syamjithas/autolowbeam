@@ -6,7 +6,7 @@ from time import sleep
 
 lightValue = 0
 threshold = 50
-mode = 1
+mode = 0
 modeCount = 0
 photoPIN = 26
 relayYellow = machine.Pin(13, machine.Pin.OUT)
@@ -28,7 +28,7 @@ def readLight():
 
 
 def highautoModeLightControl():
-    #print("highautoModeLightControl")
+    # print("highautoModeLightControl")
     while True:
         if second_thread == False:
             #print("highautoModeLightControl exit")
@@ -39,12 +39,11 @@ def highautoModeLightControl():
             sleep(0.5)
         elif lightIntencity > threshold:
             relayWhite.high()
-            sleep(1)
-            
+            sleep(0.9)
 
 
 def lowautoModeLightControl():
-    #print("lowautoModeLightControl")
+    # print("lowautoModeLightControl")
     while True:
         if second_thread == False:
             #print("lowautoModeLightControl exit")
@@ -55,11 +54,11 @@ def lowautoModeLightControl():
             sleep(0.5)
         elif lightIntencity > threshold:
             relayYellow.high()
-            sleep(1)
+            sleep(0.9)
 
 
 def autohighlowModeLightControl():
-    #print("autohighlowModeLightControl")
+    # print("autohighlowModeLightControl")
     while True:
         if second_thread == False:
             #print("autohighlowModeLightControl exit")
@@ -72,83 +71,41 @@ def autohighlowModeLightControl():
         elif lightIntencity > threshold:
             relayWhite.high()
             relayYellow.low()
-            sleep(1)
-            
+            sleep(0.9)
 
 
 def highautoMode():
-    #print("highautoMode")
-    sleep(0.5)
-    relayWhite.low()
-    sleep(0.5)
-    relayWhite.high()
-    sleep(0.5)
+    # print("highautoMode")
     relayWhite.low()
     _thread.start_new_thread(highautoModeLightControl, ())
 
 
 def highMode():
-    #print("highMode")
-    sleep(0.5)
-    relayWhite.low()
-    sleep(0.5)
-    relayWhite.high()
-    sleep(0.5)
-    relayWhite.low()
-    sleep(0.5)
-    relayWhite.high()
-    sleep(0.5)
+    # print("highMode")
     relayWhite.low()
 
 
 def lowautoMode():
-    #print("lowautoMode")
-    sleep(0.5)
-    relayYellow.low()
-    sleep(0.5)
-    relayYellow.high()
-    sleep(0.5)
-    relayYellow.low()
+    # print("lowautoMode")
     _thread.start_new_thread(lowautoModeLightControl, ())
 
 
 def lowMode():
-    #print("lowMode")
-    sleep(0.5)
-    relayYellow.low()
-    sleep(0.5)
-    relayYellow.high()
-    sleep(0.5)
-    relayYellow.low()
-    sleep(0.5)
-    relayYellow.high()
-    sleep(0.5)
+    # print("lowMode")
     relayYellow.low()
 
 
 def autohighlowMode():
-    #print("autohighlowMode")
-    sleep(0.5)
-    relayWhite.low()
-    sleep(0.5)
-    relayWhite.high()
-    relayYellow.low()
-    sleep(0.5)
-    relayYellow.high()
-    relayWhite.low()
-    sleep(0.5)
-    relayWhite.high()
-    relayYellow.low()
-    sleep(0.5)
-    relayYellow.high()
+    # print("autohighlowMode")
     relayWhite.low()
     _thread.start_new_thread(autohighlowModeLightControl, ())
 
 
 def modefn():
-    relayYellow.high()
-    relayWhite.high()
-    if mode == 1:
+    if mode == 0:
+        relayYellow.high()
+        relayWhite.high()
+    elif mode == 1:
         highautoMode()
     elif mode == 2:
         highMode()
@@ -167,17 +124,20 @@ while True:
     if button.value():
         modeCount += 1
         if modeCount == 100:
+            relayYellow.low()
+            relayWhite.high()
             modeCount = 0
-            mode = 1 if mode == 5 else mode + 1
+            mode = 0 if mode == 5 else mode + 1
             inbuiltled.high()
             second_thread = False
-            #print(second_thread)
-            sleep(1.5)
+            # print(second_thread)
+            sleep(0.5)
+            relayYellow.high()
+            sleep(0.5)
             second_thread = True
-            #print(second_thread)
+            # print(second_thread)
             modefn()
             sleep(1)
     else:
         modeCount = 0
         inbuiltled.low()
-        
